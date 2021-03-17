@@ -71,3 +71,20 @@ plt.subplot(1,2,2)
 plot_graphs(history, 'loss')
 plt.ylim(0,None)
 plt.show()
+
+# I am not quite sure why the output layer isn't already a probability distribution,
+# so I am trying to create one by setting the lowest to zero and scaling all other values
+# so that their sum is equal to one
+print()
+while True:
+  text = input("Enter text to guess the language of:\n")
+  out = model.predict([text])[0]
+  out -= min(out) # Set zero probability as a baseline
+  out /= sum(out) # Get probability distribution from model output
+  out = [(trainingData.language_map[i].capitalize(), e) for i, e in enumerate(out)]
+  # print(out)
+  out.sort(key=lambda v: -v[1]) # Sort by probability, descending
+  print("Language predictions:")
+  for lang, prob in out:
+    print(f"{lang+':':<10}\t{100*prob:.3f}%")
+  print()
