@@ -15,4 +15,7 @@ def loadData():
 ##        print("Question: ", text_batch.numpy()[i][:20])
 ##        print("Label:", label_batch.numpy()[i])
 
-    return raw_train_ds, raw_test_ds
+    train_len = len(raw_train_ds)
+    test_len = len(raw_test_ds)
+
+    return raw_train_ds.shuffle(train_len), raw_test_ds.shuffle(test_len)
