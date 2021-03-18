@@ -14,7 +14,7 @@ def plot_graphs(history, metric):
   plt.ylabel(metric)
   plt.legend([metric, 'val_'+metric])
 
-VOCAB_SIZE = 10000
+VOCAB_SIZE = 100000
 #MAX_SEQUENCE_LENGTH = 1000
 NUM_LANGUAGES = len(trainingData.language_map)
 
@@ -62,6 +62,8 @@ test_loss, test_acc = model.evaluate(test_dataset)
 print('Test Loss: {}'.format(test_loss))
 print('Test Accuracy: {}'.format(test_acc))
 
+# model.summary()
+
 plt.figure(figsize=(16,8))
 plt.subplot(1,2,1)
 plot_graphs(history, 'accuracy')
@@ -79,12 +81,12 @@ print()
 while True:
   text = input("Enter text to guess the language of:\n")
   out = model.predict([text])[0]
-  out -= min(out) # Set zero probability as a baseline
-  out /= sum(out) # Get probability distribution from model output
+  #out -= min(out) # Set zero probability as a baseline
+  #out /= sum(out) # Get probability distribution from model output
   out = [(trainingData.language_map[i].capitalize(), e) for i, e in enumerate(out)]
   # print(out)
   out.sort(key=lambda v: -v[1]) # Sort by probability, descending
   print("Language predictions:")
   for lang, prob in out:
-    print(f"{lang+':':<10}\t{100*prob:.3f}%")
+    print(f"{lang+':':<10}\t{100*prob:.3f}")
   print()
