@@ -33,6 +33,8 @@ encoder.adapt(train_dataset.map(lambda text, label: text))
 ##vocab = np.array(encoder.get_vocabulary())
 ##print(vocab[:40])
 
+# nnet = tf.keras.models.load_model("./models/my_nnet")
+
 model = tf.keras.Sequential([
     encoder,
     tf.keras.layers.Embedding(
@@ -46,16 +48,17 @@ model = tf.keras.Sequential([
     tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
     tf.keras.layers.Dense(64, activation='relu'),
     tf.keras.layers.Dropout(0.5),
-    tf.keras.layers.Dense(NUM_LANGUAGES)
+    # Softmax generates probability distribution
+    tf.keras.layers.Dense(NUM_LANGUAGES, activation='softmax')
 ])
 
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
-optimizer = tf.keras.optimizers.Adam(1e-4)
+optimizer = tf.keras.optimizers.Adam(1e-3)
 metrics = ['accuracy']
 model.compile(loss=loss_fn, optimizer=optimizer, metrics=metrics)
 
 # 30 to 50 epochs seems to be enough to fit without causing extreme overfitting
-history = model.fit(train_dataset, epochs=40, validation_data=test_dataset, verbose=2)
+history = model.fit(train_dataset, epochs=50, validation_data=test_dataset, verbose=2)
 
 test_loss, test_acc = model.evaluate(test_dataset)
 
@@ -74,19 +77,18 @@ plot_graphs(history, 'loss')
 plt.ylim(0,None)
 plt.show()
 
-# I am not quite sure why the output layer isn't already a probability distribution,
-# so I am trying to create one by setting the lowest to zero and scaling all other values
-# so that their sum is equal to one
 print()
 while True:
   text = input("Enter text to guess the language of:\n")
+  if text == "*save":
+    name = input("Enter a name for the neural net save file: ")
+    model.save("./models/" + name)
+    print("Done saving.")
   out = model.predict([text])[0]
-  #out -= min(out) # Set zero probability as a baseline
-  #out /= sum(out) # Get probability distribution from model output
   out = [(trainingData.language_map[i].capitalize(), e) for i, e in enumerate(out)]
   # print(out)
   out.sort(key=lambda v: -v[1]) # Sort by probability, descending
   print("Language predictions:")
   for lang, prob in out:
-    print(f"{lang+':':<10}\t{100*prob:.3f}")
+    print(f"{lang+':':<10}\t{100*prob:.3f}%")
   print()

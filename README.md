@@ -5,4 +5,8 @@
 
  ![sample Image](sampleResults.png)
 
- The red horizontal line represents the baseline accuracy of a model that guesses language by random chance, for the sake of comparison.
+ The red horizontal line represents the baseline accuracy of a model that guesses language by random chance, for the sake of comparison. An example where the model achieved perfect matches with all training and testing data within 50 epochs is pictured below:
+
+![sample Image 2](sampleResults2.png)
+
+The first image used a learning rate of `1e-4`, whereas the second used a learning rate of `1e-3`.
