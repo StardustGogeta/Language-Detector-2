@@ -14,7 +14,7 @@ def plot_graphs(history, metric):
   plt.ylabel(metric)
   plt.legend([metric, 'val_'+metric])
 
-VOCAB_SIZE = 100000
+VOCAB_SIZE = 10000
 #MAX_SEQUENCE_LENGTH = 1000
 NUM_LANGUAGES = len(trainingData.language_map)
 
